@@ -1,71 +1,56 @@
-# Market Commentary Assistant (Investment Coach Bot)
+# Market Commentary Assistant – Telegram Bot
 
-An interactive **chat-based assistant** that helps users **learn investing concepts** and get **neutral market commentary** — while strictly **avoiding buy/sell recommendations or personalized investment advice**.
+A **Telegram-based Investment Coach & Market Commentary Assistant** built with **FastAPI** and **Groq (OpenAI-compatible)**.
 
-This project was built as a **safe, compliance-first GenAI prototype**, focusing on guardrails, conversation flow, and clean system design rather than predictions or tips.
+The assistant helps users:
+- Learn investing concepts (Beginner → Intermediate)
+- Get neutral, news-style market commentary
 
----
-
-## 🚀 What This Assistant Does
-
-### 1. Investment Coach Mode (Teacher Persona)
-- Explains investing concepts from **Beginner → Intermediate**
-- Topics include: ETFs, SIPs, risk, diversification, valuation basics
-- Uses **simple language and analogies**
-- **Educational only** — no stock names, no recommendations
-
-Example:
-> "Explain ETFs in simple terms"
+🚫 **Crucial constraint**: The bot **never** provides buy/sell recommendations, stock tips, intraday calls, or personalized investment advice. It acts strictly as a **coach/commentator**, not an advisor.
 
 ---
 
-### 2. Market Commentary Mode (News Persona)
-- Responds to queries like:
-  - "Why is the market down today?"
-  - "Summarize today’s market news"
-- Provides **neutral, news-style summaries**
-- Focuses on macro factors such as:
-  - Inflation
-  - Interest rates
-  - Earnings trends
-  - Global / geopolitical cues
+## ✨ Key Features
 
-Example:
-> "Why is the market down today?"
+### 1. Investment Coach Mode
+- Explains concepts like ETFs, SIPs, risk, diversification
+- Uses simple language and analogies
+- Educational only, no product or stock recommendations
 
----
+### 2. Market Commentary Mode
+- Answers questions like:
+  - “Why is the market down today?”
+  - “Summarize today’s market news”
+- Neutral, journalist-style summaries
+- Focus on macro, rates, earnings, global cues
 
-### 3. Safety & Compliance Guardrails (Critical)
-- **Refuses** all requests for:
+### 3. Safety & Compliance Guardrails
+- Refuses:
   - Stock picks
-  - Buy/sell calls
+  - Buy/sell advice
   - Intraday tips
   - Guaranteed returns
-  - Personalized investment advice
-- Always includes a **clear disclaimer**
-- **Redirects users to education** instead of leaving them stuck
-
-Example:
-> "Which stock should I buy today?"
-
-Response behavior:
-- Clear refusal
-- Educational alternative
-- Disclaimer included
-
-> *Educational purposes only — not investment advice.*
+- Always redirects users to **educational frameworks**
+- Clear disclaimer included in relevant responses
 
 ---
 
-## 🧠 Design Philosophy
 
-This project is **not** a trading bot or advisory system.
+## 🧠 System Design Overview
 
-The core design goals are:
-- Safety-first LLM usage
-- Strong guardrails against misuse
-- Clear separation of personas (Teacher vs Commentator)
-- Simple, readable, modular code
+```
+User (Telegram)
+      ↓
+Telegram Webhook
+      ↓
+FastAPI (Render)
+      ↓
+Mode Router (Coach / Commentary / Guardrail)
+      ↓
+Groq LLM (OpenAI-compatible)
+      ↓
+Safe, compliant response
+```
 
 ---
 
@@ -76,85 +61,146 @@ The core design goals are:
 - **FastAPI** (API + service layer)
 
 ### LLM
-- **Groq API** (OpenAI-compatible)
-- Model: `llama-3.1-8b-instant`
+- **Groq API** 
+- Model: `llama-3.3-70b-versatile`
 - Chosen for:
   - Low cost / free-tier friendliness
   - Fast inference
   - Open-source model support
 
 ### Interface
-- **Telegram Bot** (long polling for development)
+- **Telegram Bot** (Webhook mode)
 
 ### Data
-- **Mock market news data** (explicitly allowed for MVP)
-- Modular data layer designed to be replaced with:
-  - GDELT
-  - Alpha Vantage News
-  - Other free news APIs
+- **Mock market news data** 
 
 ### Infrastructure (Free-tier compatible)
-- Designed for deployment on:
-  - Render
-  - Railway
-  - Vercel (backend only)
+- Render
 
 ---
 
 ## 📁 Project Structure
 
 ```
-market-assistant/
+project-root/
 │
 ├── app/
-│   ├── main.py            # FastAPI entry point
-│   ├── telegram_bot.py    # Telegram bot (polling)
-│   ├── router.py          # Intent / mode detection
-│   ├── prompts.py         # System prompts (Coach / Commentary / Guardrail)
-│   ├── llm.py             # Groq LLM wrapper
-│   ├── news.py            # Mock market news data
-│   └── safety.py          # Output safety enforcement
+│   ├── main.py               # FastAPI entry point
+│   ├── telegram_webhook.py   # Telegram webhook handler
+│   ├── llm.py                # Groq client
+│   ├── router.py             # Intent / mode detection
+│   ├── prompts.py            # System prompts
+│   ├── news.py               # Mock market news
+│   └── safety.py             # Output safety enforcement
 │
-├── web/                   # (Optional) simple web UI
 ├── requirements.txt
-├── .env.example
+├── .env
 └── README.md
 ```
 
 ---
 
-## ⚙️ How to Run Locally
 
-### 1. Create virtual environment
+## ⚙️ Local Setup Instructions
+
+### 1. Prerequisites
+- Python **3.11+**
+- A **Groq API key**
+- A **Telegram Bot Token** (via @BotFather)
+
+---
+
+### 2. Clone the Repository
+
 ```bash
-python -m venv .venv
-.venv\Scripts\activate   # Windows
+git clone  `https://github.com/SAKIB0004/Market_Assistant_Bot.git`
+cd `Market_Assistant_Bot`
 ```
 
-### 2. Install dependencies
+---
+
+### 3. Create & Activate Virtual Environment
+
+```bash
+python -m venv .venv
+
+# Windows
+.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+```
+
+---
+
+### 4. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Set environment variables
+---
+
+### 5. Configure Environment Variables
+
 Create a `.env` file in the project root:
 
-```bash
-GROQ_API_KEY=your_groq_api_key
-GROQ_MODEL=llama-3.1-8b-instant
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+```env
+GROQ_API_KEY="groq_api_key"
+GROQ_MODEL=llama-3.3-70b-versatile
+TELEGRAM_BOT_TOKEN="telegram_bot_token"
 ```
-
-### 4. Run Telegram bot (polling mode)
-```bash
-python -m app.telegram_bot
-```
-
-Open Telegram and start chatting with your bot.
 
 ---
 
-## 🧪 Sample Test Prompts
+### 6. Run Locally (Webhook-style API)
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+## 🚀 Deployment on Render (Telegram Webhook)
+
+### 1. Create a Render Web Service
+
+- Environment: **Python**
+- Build Command:
+  ```bash
+  pip install -r requirements.txt
+  ```
+- Start Command:
+  ```bash
+  uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  ```
+
+---
+
+### 2. Set Environment Variables in Render
+
+Add these in **Render → Service → Environment**:
+
+- `GROQ_API_KEY`
+- `GROQ_MODEL`
+- `TELEGRAM_BOT_TOKEN`
+- `PYTHON_VERSION=3.11.9` 
+
+Redeploy after setting them.
+
+---
+
+### 3. Set Telegram Webhook
+
+After deployment, Render URL:
+
+```
+https://market-assistant-bot.onrender.com
+```
+
+---
+
+## 🧪 Example Test Prompts
 
 ### Coach Mode
 - Explain ETFs
@@ -165,37 +211,23 @@ Open Telegram and start chatting with your bot.
 - Why is the market down today?
 - Summarize today’s market news
 
-### Guardrail (Expected Refusal)
+### Guardrail Test
 - Which stock should I buy today?
 - Give me intraday tips
-- Best stock for quick profit
+
+(Expected: refusal + educational redirection)
 
 ---
 
-## 🔒 Safety & Compliance Notes
+## 🔒 Compliance & Safety Notes
 
-- The assistant **never** provides:
-  - Buy/sell recommendations
-  - Stock picks
-  - Price targets
-  - Personalized advice
-- Guardrails are enforced using:
-  - Intent detection
-  - System prompts
-  - Post-generation safety checks
+- No stock recommendations
+- No buy/sell language
+- No personalized advice
+- Explicit refusal + redirection logic
 
-This ensures the system behaves as a **coach/commentator**, not an advisor.
+This ensures the assistant remains a **coach/commentator**, not an investment advisor.
 
----
-
-## 🔮 Future Improvements (Optional)
-
-- Replace mock news with live news APIs (GDELT / Alpha Vantage)
-- Deploy Telegram bot using webhooks on Render
-- Add conversation memory for learning progression
-- Add structured learning paths (Beginner → Intermediate)
-
----
 
 ## ⚠️ Disclaimer
 
