@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Market Assistant</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 820px; margin: 30px auto; padding: 0 14px; }
+    #log { border: 1px solid #ddd; padding: 12px; border-radius: 10px; min-height: 260px; }
+    .msg { margin: 10px 0; }
+    .role { font-weight: 700; }
+    textarea { width: 100%; height: 70px; margin-top: 12px; }
+    button { padding: 10px 14px; margin-top: 8px; cursor: pointer; }
+    .meta { color:#666; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h2>Market Commentary Assistant</h2>
+  <div class="meta">Coach + Commentary. Educational only, no tips.</div>
+  <div id="log"></div>
+
+  <textarea id="inp" placeholder="Ask: 'Explain ETFs' or 'Why is the market down today?'"></textarea>
+  <button onclick="send()">Send</button>
+
+  <script>
+    const log = document.getElementById("log");
+    const inp = document.getElementById("inp");
+
+    function add(role, text, mode=null) {
+      const d = document.createElement("div");
+      d.className = "msg";
+      d.innerHTML = `<div class="role">${role}${mode ? " ("+mode+")" : ""}:</div><div>${text.replace(/\n/g,"<br/>")}</div>`;
+      log.appendChild(d);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    async function send() {
+      const msg = inp.value.trim();
+      if (!msg) return;
+      inp.value = "";
+      add("You", msg);
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({message: msg})
+      });
+      const data = await res.json();
+      add("Bot", data.response, data.mode);
+    }
+  </script>
+</body>
+</html>
