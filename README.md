@@ -177,26 +177,28 @@ uvicorn app.main:app --reload
 
 ---
 
-### 2. Set Environment Variables in Render
-
-Add these in **Render → Service → Environment**:
-
-- `GROQ_API_KEY`
-- `GROQ_MODEL`
-- `TELEGRAM_BOT_TOKEN`
-- `PYTHON_VERSION=3.11.9` 
-
-Redeploy after setting them.
-
----
-
-### 3. Set Telegram Webhook
-
-After deployment, Render URL:
+## Render URL:
 
 ```
 https://market-assistant-bot.onrender.com
 ```
+
+## Using the Telegram Bot
+
+The bot is deployed and available on Telegram.
+
+### How to Find the Bot
+1. Open **Telegram**
+2. Search for the bot by username: `Market_Commentary_Assistant_Bot`
+
+or 
+
+🔗 **Live Telegram Bot**: https://t.me/Market_Commentary_Assistant_Bot
+
+### Start the Bot
+1. Open the chat
+2. Click **Start**
+3. Send a message (no commands required)
 
 ---
 
