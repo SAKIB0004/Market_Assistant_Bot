@@ -1,12 +1,16 @@
 import os
-from groq import Groq
+from openai import OpenAI
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+# Groq OpenAI-compatible endpoint
+client = OpenAI(
+    api_key=os.getenv("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1",
+)
 
 def generate(system_prompt: str, user_prompt: str) -> str:
-    model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    model = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
 
-    completion = client.chat.completions.create(
+    resp = client.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_prompt},
@@ -14,5 +18,4 @@ def generate(system_prompt: str, user_prompt: str) -> str:
         ],
         temperature=0.3,
     )
-
-    return completion.choices[0].message.content.strip()
+    return resp.choices[0].message.content.strip()
