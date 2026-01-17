@@ -47,7 +47,7 @@ FastAPI (Render)
       ↓
 Mode Router (Coach / Commentary / Guardrail)
       ↓
-Groq LLM (OpenAI-compatible)
+Groq LLM
       ↓
 Safe, compliant response
 ```
@@ -94,7 +94,7 @@ project-root/
 │   └── safety.py             # Output safety enforcement
 │
 ├── requirements.txt
-├── .env
+├── .env.example
 └── README.md
 ```
 
@@ -113,8 +113,8 @@ project-root/
 ### 2. Clone the Repository
 
 ```bash
-git clone  `https://github.com/SAKIB0004/Market_Assistant_Bot.git`
-cd `Market_Assistant_Bot`
+git clone  https://github.com/SAKIB0004/Market_Assistant_Bot.git
+cd Market_Assistant_Bot
 ```
 
 ---
